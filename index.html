@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>World Clock</title>
+    <script src="jquery-3.3.1.min.js"></script>
+    <script src="moment.min.js"></script>
+    <script src="moment-timezone-with-data.min.js"></script>
+    <script src="knockout-3.4.2.js"></script>
+    <script src="cities.js"></script>
+    <link rel="stylesheet" href="TZClock.css">
+</head>
+<body>
+  <div id="main"></div>
+<script type="text/javascript">
+
+  var model;
+  $( document ).ready(function() {
+    console.log( "ready!" );
+    var cityModel = function(city){
+      var self = this;
+      self.Name = ko.observable(city.Name);
+      self.TimeZone = ko.observable(city.TimeZone);
+      self.time = ko.observable(city.time);
+    }
+
+    var citiesModel = function(cities){
+      var self = this;
+      self.cities = ko.observableArray();
+      $.map(cities,function(city,i){
+        self.cities.push(new cityModel(city));
+      });
+      self.tick = function(myMoment){
+        var now = moment();
+        for(var i=0; i<self.cities().length;i++){
+          //only doing the trick the first time because we don't have a defined model.
+          self.cities()[i].time(now.tz(self.cities()[i].TimeZone()).format("dddd h:mm:ss a"));
+        }
+        return self.cities().length;
+      };
+    };
+    
+    var now = moment();
+    model = new citiesModel(cities);
+    model.tick(now);
+    ko.applyBindings(model);
+    setInterval(function(){model.tick(moment())},1000);
+  });
+</script>
+<ul data-bind="foreach: cities" class="ulCitiesList">
+  <li class="liCity">
+      <div data-bind="text: Name" class="cityName"></div>
+      <div data-bind="text: time" class="cityTime"></div>
+  </li>
+</ul>
+</body>
+</html>

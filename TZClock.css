@@ -1,0 +1,21 @@
+body{
+  background-color:black;
+}
+.ulCitiesList{
+  list-style-type: none;
+  font-size: xx-large;
+  white-space: nowrap;
+}
+.liCity{
+  padding-bottom:.5em;
+  margin-right:1.5em;
+  float:left;
+}
+.cityName {
+  color:white;
+  font-size:210%;
+}
+.cityTime {
+  color: red;
+  font-size:160%;
+}
